@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: node-red2
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/kudalanfs/nodered
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: kudala-storage
+

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt
+  labels:
+    app: mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqtt
+  template:
+    metadata:
+      labels:
+        app: mqtt
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      containers:
+      - name: mqtt
+        image: mqtt:base
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1883
+          name: port1
+        - containerPort: 9001
+          name: port2
+        securityContext:
+          privileged: true
+        env:
+        - name: network
+          value: host
+        volumeMounts:
+        - name: mqtt
+          mountPath: /srv/mosquitto/data/
+        volumeMounts:
+        - name: mqttlog
+          mountPath: /srv/mosquitto/log/
+      volumes:
+      - name: mqtt
+        persistentVolumeClaim:
+          claimName: mqtt
+      - name: mqttlog
+        persistentVolumeClaim:
+          claimName: mqttlog

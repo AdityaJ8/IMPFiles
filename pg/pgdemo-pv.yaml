@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pg-demo
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /mnt/kudalanfs/pg
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: kudala-storage
+

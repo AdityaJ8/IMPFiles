@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafanab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafanab
+  template:
+    metadata:
+      name: grafanab
+      labels:
+        app: grafanab
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      containers:
+      - name: grafanab
+        image: eu.gcr.io/kudala-iot/kudala-vision
+        command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]
+        ports:
+        - name: grafanab
+          containerPort: 3000
+        env:
+          - name: ADMIN_USERNAME
+            value: "kudala-admin"
+          - name: ADMIN_SECRET
+            value: "KuD@L@!!admin"
+          - name: APP_NAME
+            value: "I-MOST"
+          - name: APP_SLOGAN
+            value: "Powered by IMS Engineering"
+          - name: APP_PROTOCOL
+            value: "http" 
+          - name: APP_PORT
+            value: "3000"
+          - name: APP_URL
+            value: "localhost"
+          - name: GF_INSTALL_PLUGINS
+            value: "grafana-worldmap-panel,natel-discrete-panel,grafana-clock-panel,larona-epict-panel,grafana-piechart-panel"
+          - name: GF_PANELS_DISABLE_SANITIZE_HTML
+            value: "true"
+        volumeMounts:
+          - mountPath: /usr/share/kudala/public/img/custom
+            name: grafanabcustom
+        volumeMounts:
+          - mountPath: /etc/dashboards
+            name: grafanabdashboards
+        volumeMounts:
+          - mountPath: /etc/kudala/provisioning
+            name: grafanabprovisioning
+        volumeMounts:
+          - mountPath: /var/lib/kudala
+            name: grafanabdata
+        volumeMounts:
+          - mountPath: /var/log/kudala
+            name: grafanablog
+        volumeMounts:
+          - mountPath: /usr/share/kudala
+            name: grafanabhome
+
+      volumes:
+      - name: grafanabcustom
+        persistentVolumeClaim:
+          claimName: grafanabcustom
+          # restartPolicy: Always
+      - name: grafanabdashboards
+        persistentVolumeClaim:
+          claimName: grafanabdashboards
+          #restartPolicy: Always
+      - name: grafanabprovisioning
+        persistentVolumeClaim:
+          claimName: grafanabprovisioning
+          #restartPolicy: Always
+      - name: grafanabdata
+        persistentVolumeClaim:
+          claimName: grafanabdata
+          #restartPolicy: Always
+      - name: grafanablog
+        persistentVolumeClaim:
+          claimName: grafanablog
+          #restartPolicy: Always
+      - name: grafanabhome
+        persistentVolumeClaim:
+          claimName: grafanabhome
+          #restartPolicy: Always
+
+
+
+
+
+        

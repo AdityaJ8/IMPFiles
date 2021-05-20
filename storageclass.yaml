@@ -1,0 +1,7 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: kudala-storage
+provisioner: kubernetes.io/nfs
+reclaimPolicy: Retain
+allowVolumeExpansion: true

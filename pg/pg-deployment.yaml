@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-deployment
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      nodeSelector:
+         app: nifi
+      containers:
+      - name: postgres
+        image: timescale/timescaledb:2.0.1-pg12
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: pg
+          mountPath: /var/lib/postgresql/data
+          subPath: pgdata
+        env: 
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_PASSWORD
+          value: k8De*o9s1
+        - name: POSTGRES_USER
+          value: admin
+      volumes:
+      - name: pg
+        persistentVolumeClaim:
+          claimName: pg
+

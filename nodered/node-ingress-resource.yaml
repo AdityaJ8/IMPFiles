@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-ingress
+  annotations:
+          #nginx.ingress.kubernetes.io/app-root: /
+spec:
+  tls:
+  - hosts:
+      - in-k8s.node.devops.to
+    secretName: my-tls
+  rules:
+  - host: in-k8s.node.devops.to
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: node-red
+            port:
+              number: 1880
+

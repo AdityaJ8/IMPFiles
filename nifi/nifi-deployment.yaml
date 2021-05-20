@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-nifi
+  labels:
+    app: nifi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nifi
+  template:
+    metadata:
+      labels:
+        app: nifi
+    spec:
+      nodeSelector:
+         app: nifi
+      containers:
+      - name: nifi
+        image: nifi:dev7
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: port1
+        - containerPort: 55555
+          name: port2
+        env:
+        - name: NIFI_JVM_HEAP_INIT
+          value: 8g
+        - name: NIFI_JVM_HEAP_MAX
+          value: 8g
+        - name: THREAD_VALUE
+          value: "2"
+        volumeMounts:
+        - name: nifi
+          mountPath: /var/nifi/
+      volumes:
+      - name: nifi
+        persistentVolumeClaim:
+          claimName: nifi-claim
+

@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafanac
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafanac
+  template:
+    metadata:
+      name: grafanac
+      labels:
+        app: grafanac
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      containers:
+      - name: grafanac
+        image: eu.gcr.io/kudala-iot/kudala-vision
+        command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]
+        ports:
+        - name: grafanac
+          containerPort: 3000
+        env:
+          - name: ADMIN_USERNAME
+            value: "kudala-admin"
+          - name: ADMIN_SECRET
+            value: "KuD@L@!!admin"
+          - name: APP_NAME
+            value: "BMEConnect"
+          - name: APP_SLOGAN
+            value: "Powered by the BME Group"
+          - name: APP_PROTOCOL
+            value: "http" 
+          - name: APP_PORT
+            value: "3000"
+          - name: APP_URL
+            value: "localhost"
+          - name: GF_INSTALL_PLUGINS
+            value: "grafana-worldmap-panel"
+        volumeMounts:
+          - mountPath: /usr/share/kudala/public/img/custom
+            name: grafanaccustom
+        volumeMounts:
+          - mountPath: /etc/dashboards
+            name: grafanacdashboards
+        volumeMounts:
+          - mountPath: /etc/kudala/provisioning
+            name: grafanacprovisioning
+        volumeMounts:
+          - mountPath: /var/lib/kudala
+            name: grafanacdata
+        volumeMounts:
+          - mountPath: /var/log/kudala
+            name: grafanaclog
+        volumeMounts:
+          - mountPath: /usr/share/kudala
+            name: grafanachome
+
+      volumes:
+      - name: grafanaccustom
+        persistentVolumeClaim:
+          claimName: grafanaccustom
+          # restartPolicy: Always
+      - name: grafanacdashboards
+        persistentVolumeClaim:
+          claimName: grafanacdashboards
+          #restartPolicy: Always
+      - name: grafanacprovisioning
+        persistentVolumeClaim:
+          claimName: grafanacprovisioning
+          #restartPolicy: Always
+      - name: grafanacdata
+        persistentVolumeClaim:
+          claimName: grafanacdata
+          #restartPolicy: Always
+      - name: grafanaclog
+        persistentVolumeClaim:
+          claimName: grafanaclog
+          #restartPolicy: Always
+      - name: grafanachome
+        persistentVolumeClaim:
+          claimName: grafanachome
+          #restartPolicy: Always
+
+
+
+
+
+        

@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafanaa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafanaa
+  template:
+    metadata:
+      name: grafanaa
+      labels:
+        app: grafanaa
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      containers:
+      - name: grafanaa
+        image: grafana-a/eu.gcr.io/kudala-iot/kudala-vision
+        ports:
+        - name: grafanaa
+          containerPort: 3000
+        env:
+          - name: ADMIN_USERNAME
+            value: "kudala-admin"
+          - name: ADMIN_SECRET
+            value: "KuD@L@!!admin"
+          - name: APP_NAME
+            value: "Vision from Kudala"
+          - name: APP_SLOGAN
+            value: "Intelligent IoT"
+          - name: APP_PROTOCOL
+            value: "http" 
+          - name: APP_PORT
+            value: "3000"
+          - name: APP_URL
+            value: "localhost"
+          - name: GF_INSTALL_PLUGINS
+            value: "grafana-clock-panel"
+          - name: GF_PANELS_DISABLE_SANITIZE_HTML
+            value: "true"
+        volumeMounts:
+          - mountPath: /usr/share/kudala/public/img/custom
+            name: grafanaacustom
+        volumeMounts:
+          - mountPath: /etc/dashboards
+            name: grafanaadashboards
+        volumeMounts:
+          - mountPath: /etc/kudala/provisioning
+            name: grafanaaprovisioning
+        volumeMounts:
+          - mountPath: /var/lib/kudala
+            name: grafanaadata
+        volumeMounts:
+          - mountPath: /var/log/kudala
+            name: grafanaalog
+        volumeMounts:
+          - mountPath: /usr/share/kudala
+            name: grafanaahome
+
+      volumes:
+      - name: grafanaacustom
+        persistentVolumeClaim:
+          claimName: grafanaa
+      restartPolicy: Always
+      - name: grafanaadashboards
+        persistentVolumeClaim:
+          claimName: grafanaa
+      restartPolicy: Always
+      - name: grafanaaprovisioning
+        persistentVolumeClaim:
+          claimName: grafanaa
+      restartPolicy: Always
+      - name: grafanaadata
+        persistentVolumeClaim:
+          claimName: grafanaa
+      restartPolicy: Always
+      - name: grafanaalog
+        persistentVolumeClaim:
+          claimName: grafanaa
+      restartPolicy: Always
+      - name: grafanaahome
+        persistentVolumeClaim:
+          claimName: grafanaa
+      restartPolicy: Always
+
+
+
+
+
+        

@@ -1,0 +1,48 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kafka-broker0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+        id: "0"
+    spec:
+      nodeSelector:
+         app: nifi
+      containers:
+      - name: kafka
+        image: anish05/devops_images:kafka1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_ADVERTISED_PORT
+          value: "30029"
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: "34.90.253.11"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: 34.90.253.11:30030
+        - name: KAFKA_BROKER_ID
+          value: "0"
+        - name: KAFKA_CREATE_TOPICS
+          value: admintome-test:1:1
+        volumeMounts:
+          - name: kafak
+            mountPath: /var/lib/confluent-control-center
+        volumeMounts:
+          - name: kafkaconf
+            mountPath: /etc/replicator
+      volumes:
+      - name: kafka
+        persistentVolumeClaim:
+          claimName: kafka
+      - name: kafkaconf
+        persistentVolumeClaim:
+          claimName: kafka
